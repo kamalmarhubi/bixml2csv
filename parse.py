@@ -1,5 +1,4 @@
 import xml.etree.cElementTree as etree
-import sys
 import os
 import os.path
 import logging
@@ -11,7 +10,6 @@ logger = logging.getLogger(__name__)
 rootLogger = logging.getLogger()
 rootLogger.addHandler(logging.StreamHandler())
 rootLogger.setLevel(logging.INFO)
-
 
 def process_fileobj(fileobj, name='<nameless>'):
     logger.debug('processing file: ' + name)
@@ -60,7 +58,8 @@ def process_dir(path):
                 continue
             process_file(fullpath)
 
-if __name__ == '__main__':
+def main():
+    import sys
     if len(sys.argv) == 1: # no argument, process std as a tar file
         logger.info('using stdin as a tar archive')
         process_tarfile(sys.stdin)
@@ -72,3 +71,6 @@ if __name__ == '__main__':
         else:
             logger.info('processing tar archive: ' + path)
             process_tarfile(path)
+
+if __name__ == '__main__':
+    main()
