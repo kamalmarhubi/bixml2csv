@@ -60,17 +60,20 @@ def process_dir(path):
 
 def main():
     import sys
-    if len(sys.argv) == 1: # no argument, process std as a tar file
-        logger.info('using stdin as a tar archive')
+    import argparse
+    argp = argparse.ArgumentParser()
+    argp.add_argument('file', nargs='?', default='-')
+    args = argp.parse_args()
+    if args.file == '-':
+        logger.info('using stdin as a tar archive...')
         process_tarfile(sys.stdin)
     else:
-        path = sys.argv[1]
-        if os.path.isdir(path):
-            logger.info('walking directory: ' + path)
-            process_dir(sys.argv[1])
+        if os.path.isdir(args.file):
+            logger.info('walking directory: ' + args.file)
+            process_dir(args.file)
         else:
-            logger.info('processing tar archive: ' + path)
-            process_tarfile(path)
+            logger.info('processing tar archive: ' + args.file)
+            process_tarfile(args.file)
 
 if __name__ == '__main__':
     main()
