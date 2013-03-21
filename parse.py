@@ -92,3 +92,5 @@ if __name__ == '__main__':
         main()
     except KeyboardInterrupt:
         sys.exit(130) # 130: terminated by ^C
+    except (IOError, OSError):
+        sys.exit(141)
