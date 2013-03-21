@@ -15,24 +15,45 @@ log_level_dict = { 0: logging.WARNING
                  , 2: logging.DEBUG
                  }
 
+xml_fields = [ 'id'
+             , 'latestUpdateTime'
+             , 'name'
+             , 'terminalName'
+             , 'lat'
+             , 'long'
+             , 'installed'
+             , 'locked'
+             , 'installDate'
+             , 'removalDate'
+             , 'temporary'
+             , 'nbBikes'
+             , 'nbEmptyDocks'
+             ]
+# order of fields below determines column order in output
+output_fields = [ 'lastUpdate' ] + xml_fields
+
 def process_fileobj(fileobj, name='<nameless>'):
+    def quote(s):
+        return '"'+s+'"' if s.find(' ') > -1 else s
     logger.debug('processing file: ' + name)
     file_time = None
     try:
         for event, element in etree.iterparse(fileobj,
                                               events=('start', 'end')):
+            # only want start event for the root element to get the file time
             if event == 'start':
                 if element.tag == 'stations':
                     file_time = element.get('lastUpdate')
                 else:
                     continue
+            # otherwise we are only interested in station end events
             elif element.tag != 'station':
                 continue
             else:
-                row = [unicode(elt.text) or ''
-                       for elt in element.getchildren()]
-                row.insert(0, file_time)
-                row = map(lambda s: '"'+s+'"' if s.find(' ') > -1 else s, row)
+                station_info = { field: element.find(field).text or ''
+                                 for field in xml_fields }
+                station_info['lastUpdate'] = file_time
+                row = map(lambda f: quote(station_info.get(f)), output_fields)
                 print(','.join(row).encode('utf-8'))
                 element.clear()
     except etree.ParseError as e:
