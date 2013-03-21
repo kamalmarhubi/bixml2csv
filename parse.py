@@ -32,6 +32,7 @@ def process_fileobj(fileobj, name='<nameless>'):
                 row = [unicode(elt.text) or ''
                        for elt in element.getchildren()]
                 row.insert(0, file_time)
+                row = map(lambda s: '"'+s+'"' if s.find(' ') > -1 else s, row)
                 print(','.join(row).encode('utf-8'))
                 element.clear()
     except etree.ParseError as e:
