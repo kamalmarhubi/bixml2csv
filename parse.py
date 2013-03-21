@@ -66,9 +66,10 @@ def main():
     import sys
     import argparse
     argp = argparse.ArgumentParser()
-    argp.add_argument('file', nargs='?', default='-')
+    argp.add_argument('file', nargs='?', default='-',
+                      help='directory or tar archive to process')
     argp.add_argument('-v', '--verbose', dest='verbosity', action='count', default=0,
-                      help='Be verbose. Specify twice for more.')
+                      help='be verbose (specify twice for more)')
     args = argp.parse_args()
     # set log level; higher repeats get DEBUG
     log_level = log_level_dict.get(args.verbosity, logging.DEBUG)
