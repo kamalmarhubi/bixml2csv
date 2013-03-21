@@ -92,20 +92,28 @@ def main():
                       help='directory or tar archive to process')
     argp.add_argument('-v', '--verbose', dest='verbosity', action='count', default=0,
                       help='be verbose (specify twice for more)')
+    argp.add_argument('--header', action='store_true',
+                      help='print column header row')
     args = argp.parse_args()
     # set log level; higher repeats get DEBUG
     log_level = log_level_dict.get(args.verbosity, logging.DEBUG)
     logger.setLevel(log_level)
 
+    def print_header():
+        print ','.join(output_fields)
+
     if args.file == '-':
         logger.warn('using stdin as a tar archive...')
+        if args.header: print_header()
         process_tarfile(sys.stdin)
     else:
         if os.path.isdir(args.file):
             logger.info('walking directory: ' + args.file)
+            if args.header: print_header()
             process_dir(args.file)
         else:
             logger.info('processing tar archive: ' + args.file)
+            if args.header: print_header()
             process_tarfile(args.file)
 
 if __name__ == '__main__':
