@@ -50,8 +50,8 @@ def process_fileobj(fileobj, name='<nameless>'):
             elif element.tag != 'station':
                 continue
             else:
-                station_info = { field: element.find(field).text or ''
-                                 for field in xml_fields }
+                station_info = dict((field, element.find(field).text or '')
+                                    for field in xml_fields)
                 station_info['lastUpdate'] = file_time
                 row = map(lambda f: quote(station_info.get(f)), output_fields)
                 print(','.join(row).encode('utf-8'))
