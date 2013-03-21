@@ -86,4 +86,8 @@ def main():
             process_tarfile(args.file)
 
 if __name__ == '__main__':
-    main()
+    import sys
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(130) # 130: terminated by ^C
