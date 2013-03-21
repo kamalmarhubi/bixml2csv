@@ -10,6 +10,10 @@ logger = logging.getLogger(__name__)
 rootLogger = logging.getLogger()
 rootLogger.addHandler(logging.StreamHandler())
 rootLogger.setLevel(logging.INFO)
+log_level_dict = { 0: logging.WARNING
+                 , 1: logging.INFO
+                 , 2: logging.DEBUG
+                 }
 
 def process_fileobj(fileobj, name='<nameless>'):
     logger.debug('processing file: ' + name)
@@ -63,9 +67,15 @@ def main():
     import argparse
     argp = argparse.ArgumentParser()
     argp.add_argument('file', nargs='?', default='-')
+    argp.add_argument('-v', '--verbose', dest='verbosity', action='count', default=0,
+                      help='Be verbose. Specify twice for more.')
     args = argp.parse_args()
+    # set log level; higher repeats get DEBUG
+    log_level = log_level_dict.get(args.verbosity, logging.DEBUG)
+    logger.setLevel(log_level)
+
     if args.file == '-':
-        logger.info('using stdin as a tar archive...')
+        logger.warn('using stdin as a tar archive...')
         process_tarfile(sys.stdin)
     else:
         if os.path.isdir(args.file):
