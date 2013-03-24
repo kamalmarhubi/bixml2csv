@@ -19,5 +19,9 @@ for chunk in chunks:
     dedup_ix = dedup.set_index(ix_cols)
     chunk_ix = chunk.set_index(ix_cols)
     last_ix = last.set_index(ix_cols)
-    dedup_ix.ix[dedup_ix.index.diff(last_ix.index)].to_csv(sys.stdout, header=False, float_format='%.0F')
+    index = dedup_ix.index.diff(last_ix.index)
+    #print >> sys.stderr, index
+    if len(index) > 0:
+	indexed = dedup_ix.ix[index]
+	indexed.to_csv(sys.stdout, header=False, float_format='%.0F')
     last = chunk
