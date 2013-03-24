@@ -10,6 +10,8 @@ chunk_iter = iter(chunker)
 peek = chunk_iter.next()
 chunks = chain([peek], chunk_iter)
 
+print ','.join(peek.columns)
+
 last = pd.DataFrame(columns=peek.columns)
 dedup_cols = peek.columns.drop('lastUpdate')
 ix_cols = ['lastUpdate', 'id']
