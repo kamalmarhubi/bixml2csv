@@ -89,7 +89,7 @@ def main():
     import argparse
     argp = argparse.ArgumentParser()
     argp.add_argument('file', nargs='?', default='-',
-                      help='directory or tar archive to process')
+                      help='file or directory to process')
     argp.add_argument('-v', '--verbose', dest='verbosity', action='count', default=0,
                       help='be verbose (specify twice for more)')
     argp.add_argument('--header', action='store_true',
@@ -114,7 +114,10 @@ def main():
         else:
             logger.info('processing tar archive: ' + args.file)
             if args.header: print_header()
-            process_tarfile(args.file)
+            if args.file.endswith('.tar'):
+                process_tarfile(args.file)
+            else:
+                process_file(args.file)
 
 if __name__ == '__main__':
     import sys
